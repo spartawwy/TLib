@@ -1,0 +1,25 @@
+//-------------------------
+// listing dump file
+//-------------------------
+
+import "TLib/tool/tsystem_generic_param.proto";
+
+// use message_lite
+option optimize_for = LITE_RUNTIME;
+
+// a listing variable
+message ListingVariable
+{
+	required string         name   = 1; // variable name
+	required GenericParam   value  = 2; // values
+}
+
+// a listing
+message Listing
+{
+	required string           name = 1; // listing type/name
+	repeated ListingVariable  vars = 2; // variables
+}
+
+
+

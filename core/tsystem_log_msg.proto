@@ -1,0 +1,26 @@
+//-------------------------
+// network return code
+//-------------------------
+
+import "TLib/core/tsystem_time.proto";
+
+
+// use message_lite
+option optimize_for = LITE_RUNTIME;
+
+message LogMessage
+{
+	enum WarnLevel
+	{
+		LOG           =  0; // normal log
+		TRIVIAL		  =  1; 
+		VITAL         =  2;  
+		LETHAL        =  3; // anyting will cause the server to stop service
+	}
+
+	required uint32    pid       = 1;
+	optional Time      timestamp = 2;
+	optional WarnLevel level     = 3 [default = LOG];
+	required string    key       = 4;
+	required string    msg       = 5;
+}

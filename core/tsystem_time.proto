@@ -1,0 +1,12 @@
+//-------------------------
+// network time structure
+//-------------------------
+
+// use message_lite
+option optimize_for = LITE_RUNTIME;
+
+message Time
+{
+	optional int64  time_value = 1 [default = 0];   // time_t value
+	optional double frac_sec   = 2 [default = 0];   // fraction of second
+}

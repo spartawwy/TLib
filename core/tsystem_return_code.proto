@@ -1,0 +1,28 @@
+//-------------------------
+// network return code
+//-------------------------
+
+// use message_lite
+option optimize_for = LITE_RUNTIME;
+
+// return code for network communication
+message ReturnCode
+{
+	optional int32  code       = 1 [default = 0];   // return code
+	optional string error_msg  = 2 [default =""];   // error message
+}
+
+// return print out for network communication
+message ReturnPrint
+{
+	repeated string std_out    = 1;   // mimic std::cout, each string is a line
+	repeated string std_err    = 2;   // mimic std::cerr, each string is a line
+}
+
+// light request ack
+message RequestAck
+{
+	optional uint32			request_id = 1 [default = 0]; // in case no request id when message corrupted
+	optional ReturnCode		result     = 2; 
+	optional ReturnPrint    print      = 3;
+}

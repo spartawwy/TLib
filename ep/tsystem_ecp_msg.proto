@@ -1,0 +1,214 @@
+//-------------------------
+// ecp related messages
+//-------------------------
+
+import "TLib/core/tsystem_return_code.proto";
+import "TLib/core/tsystem_time.proto";
+import "TLib/tool/tsystem_rational_number.proto";
+
+// use message_lite
+option optimize_for = LITE_RUNTIME;
+
+//---------------------------
+// ecp user request message
+//---------------------------
+message EcpUserRequest
+{
+	enum Type
+	{
+		LOGIN      = 0;
+		LOGOUT     = 1;
+	}
+
+	required uint32  request_id            = 1;
+	required Type    request_type          = 2;
+	required uint32  user_id               = 3;
+   	required uint32  process_id            = 4;
+}
+
+//-----------------------------
+// sub enumerators and messages
+//-----------------------------
+
+// buy / sell flag
+enum BuySell
+{
+	BUY  = 0;
+	SELL = 1;
+}
+
+// open / close flag
+enum OpenClose
+{
+    OPEN  = 0;
+	CLOSE = 1;
+	CLOSE_OVERNIGHT = 2;
+	CLOSE_INTRDAY   = 3;
+}
+
+// ioc flag
+enum IOC
+{
+	NONE = 0;
+	FOK  = 1;
+	FAK  = 2;
+}
+
+// source of fill
+enum Source
+{
+	EXCHANGE = 0;	// exchange trade, any trade from exchange public trade
+	COUNTER  = 1;   // counter trade, any trade from non-exchange public trade
+	FAKE     = 2;   // fake trade
+}
+
+// mode of fill
+enum Mode
+{
+	NORMAL   = 0;  // normal trade
+	INJECT   = 1;  // injection trade, things that we miss from normal trade
+	EXPIRE   = 2;  // expiration adjustment
+	ADJUST   = 3;  // any adjust
+	POSITION = 4;  // for fake trade only, this trade only count for position distortion
+	               // does not count for any other risk exposure
+	CASH     = 5;  // ajust to reflect cash change, for example: dividend, interest
+}
+
+// comb / uncomb flag
+enum CombUnComb
+{
+	 COMB    = 0;
+	 UNCOMB  = 1;
+}
+
+//-----------------------------------
+// order types and order definations
+//-----------------------------------
+
+// list all defined order type
+// do not change order of this enumerator 
+message OrderInfo
+{
+	enum OrderType
+	{
+		SIMPLE_ORDER   = 0;  // simple market and limit order
+		TWO_SIDE_ORDER = 1;
+	}
+
+	required OrderType		type         = 1; // order type
+	
+	//--------------------
+	// order info holders  
+	//--------------------
+	optional SimpleOrder	simple_order   = 2;
+	optional TwoSideOrder   two_side_order = 3;
+}
+
+// Simple limit order
+message SimpleOrder
+{
+	optional OpenClose open_close   = 1 [default = OPEN]; 
+	required BuySell   buy_sell     = 2;
+	required uint32    quantity     = 3;
+	optional RationalNumber	 price  = 4;                        // if not set, market order
+	optional uint32    fill_qty     = 5 [default = 0];			// total fill qty
+	optional uint32    cancel_qty   = 6 [default = 0];          // total cancel qty
+	optional IOC       ioc          = 7 [default = NONE];       // ioc option
+}
+
+// two side litmit order
+message TwoSideOrder
+{
+	message OneSideQuote
+	{
+		optional OpenClose open_close = 1 [default = OPEN];
+		required uint32    quantity   = 2;
+		required RationalNumber price = 3;
+		optional uint32    fill_qty   = 4;
+		optional uint32    cancel_qty = 5;
+	}
+
+	optional OneSideQuote	bid_quote   = 2;
+	optional OneSideQuote   ask_quote   = 3;
+}
+
+// order header
+// all date and update_time are order sender's local time
+// client local reference is for client use only
+message OrderHeader
+{
+	enum OrderStatus
+	{
+		NO_REPLY    =  0; // ecp has not replied yet
+		RECEIVED    =  1; // ecp received order
+		FULL_FILL   =  2; // order is fully filled 
+		PARTIL_FILL =  3; // order if partially filled
+		PENDING     =  4; // order is in the market
+		CANCEL      =  5; // order is cancelled
+	}
+
+	optional Time       timestamp    = 1; 
+	optional uint32     user_id      = 2 [default = 0];  // the user the order is placed behaved on
+	optional uint32		user_ref     = 3 [default = 0];  // client local order id
+	optional uint32     process_id   = 4 [default = 0];  // the proess that sends the order
+	optional uint32		ecp_oid      = 5 [default = 0];  // ecp order id
+	optional uint32		seq_id       = 6 [default = 0];  // order sequence id
+	optional OrderStatus     status  = 7 [default = NO_REPLY];
+	optional int32      contract_id  = 8;
+	optional string     remark       = 9;
+	optional string     quote_ref    = 10;
+}
+
+
+//------------------------
+// communication messages
+//------------------------
+
+// order reqeust
+// cancel: if only order_header is set
+// submit: if not ecp_oid is set, and order_info is set
+// !!!!!!modify: if ecp_oid is set, and order_info is set, should NOT BE USED given no permission
+message OrderRequest
+{
+	required OrderHeader	order_header = 1;
+	optional OrderInfo		order_info   = 2;
+	optional bool           cancel_on_disconnect = 3 [default = true];  // if cancel order when sender disconnected from ECP
+	optional int32          time_out             = 4 [default = -1  ];  // request is valied up to {time_out} ms, in case the request is jammed 
+	                                                                    // by flow control too long
+}
+
+// response message for order request
+message OrderRequestAck
+{	
+	enum Type
+	{
+		Submit = 0;
+		Cancel = 1;
+	}
+
+	optional ReturnCode    return_code  = 1;
+	required OrderHeader   order_header = 2;
+	required Type          request_type = 3;
+}
+
+// Order ack, update order status
+message OrderAck
+{
+	required OrderHeader   order_header = 1;
+	required OrderInfo     order_info   = 2;
+}
+
+// Order fill
+message OrderFill
+{
+	required Time       exec_time    = 1;
+	required string     exec_id      = 2;
+	optional OpenClose  open_close   = 3 [default = OPEN]; 
+	required BuySell    buy_sell     = 4;
+	required uint32     quantity     = 5;
+	required double     price        = 6;
+	optional Source     source       = 7 [default = EXCHANGE];
+	optional Mode       mode         = 8 [default = NORMAL];
+	required OrderHeader order_header = 9;
+	required uint32     clearing_date = 10;
+}

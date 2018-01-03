@@ -1,0 +1,25 @@
+//---------------------------------------
+// heartbeat message
+//---------------------------------------
+
+import "TLib/core/tsystem_time.proto";
+
+// use message_lite
+option optimize_for = LITE_RUNTIME;
+
+message Heartbeat
+{
+	enum Status
+	{
+		OFF_LINE = 0;
+		INITIATE = 1;
+		ON_LINE  = 2;
+		PANIC    = 3;
+	}
+
+	required uint32   pid       = 1;
+	optional Time     timestamp = 2;
+	optional Status   status    = 3 [default = OFF_LINE];
+	optional string   info      = 4;
+}
+

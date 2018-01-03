@@ -1,0 +1,41 @@
+//-------------------------
+// generic parameter
+//-------------------------
+
+import "TLib/core/tsystem_return_code.proto";
+
+// use message_lite
+option optimize_for = LITE_RUNTIME;
+
+// message for a non-typed variable
+message GenericParam
+{
+	enum DataType
+	{
+		UINT    = 0;
+		INT     = 1;
+		DOUBLE  = 2;
+		STRING  = 3;
+	};
+
+	enum SizeType
+	{
+		SCALAR  = 0;
+		ARRAY   = 1;
+	};
+
+	optional DataType data_type  = 1 [default = INT];
+	optional SizeType size_type  = 2 [default = SCALAR];
+	
+	optional uint32 val_uint32   = 3 [default = 0];
+	repeated uint32 array_uint32 = 4 [packed = true];
+
+	optional int32  val_int32    = 5 [default = 0];
+	repeated int32  array_int32  = 6 [packed = true];
+
+	optional double val_double   = 7 [default = 0];
+	repeated double array_double = 8 [packed = true];
+	
+	optional string val_string   = 9 [default = ""]; 
+	repeated string array_string = 10;
+}

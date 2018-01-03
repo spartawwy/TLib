@@ -1,0 +1,31 @@
+//-------------------------
+// data server messages
+//-------------------------
+
+// use message_lite
+option optimize_for = LITE_RUNTIME;
+
+// message for topic reqeust
+// topic_id: the topic id reqeuested
+// type: type of request
+// keys: keys of the topic
+// all_available: every contract the server has
+// add_key: for subsribe only, add key if not found
+        
+message  TopicRequest
+{
+	enum Type
+	{
+		Subscribe   = 0;
+		Request     = 1;
+		Unsubscribe = 2;     
+	}
+
+	required uint32 request_id    = 1;
+	required int32  topic_id      = 2;   
+	optional Type   type          = 3 [default = Subscribe];     
+	repeated string keys          = 4;
+	optional bool   all_available = 5 [default = false];
+	optional bool   add_key       = 6 [default = false];
+	optional int32  data_pos      = 7;
+}

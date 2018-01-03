@@ -1,0 +1,19 @@
+//-------------------------
+// network cmd line
+//-------------------------
+
+import "TLib/core/tsystem_return_code.proto";
+import "TLib/tool/tsystem_generic_param.proto";
+
+// use message_lite
+option optimize_for = LITE_RUNTIME;
+
+// message for a network command
+// the ack field indicate if the other side is blocking waiting
+message GenericRequest
+{
+	optional uint32	  request_id    = 1 [default = 0]; 
+	optional bool     ack      	    = 2 [default = true]; // if the command need an ack  
+	required string	  req_name      = 3;        
+	repeated string   req_args      = 4;
+}

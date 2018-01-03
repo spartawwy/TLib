@@ -1,0 +1,15 @@
+//-------------------------
+// rational number
+//-------------------------
+
+// use message_lite
+option optimize_for = LITE_RUNTIME;
+
+// rational number, for precise price
+message RationalNumber
+{
+	optional int32  r = 1 [default=0]; // round part
+	required int32  n = 2;		       // nominator
+	required int32  d = 3;		       // denominator
+}
+

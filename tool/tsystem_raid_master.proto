@@ -1,0 +1,12 @@
+//---------------------------------------
+// heartbeat message
+//---------------------------------------
+
+// use message_lite
+option optimize_for = LITE_RUNTIME;
+
+message RaidMaster
+{
+	optional uint32   pid       = 1[default = 0];
+}
+

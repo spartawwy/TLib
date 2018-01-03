@@ -1,0 +1,12 @@
+//---------------------------------------
+// handshake message
+//---------------------------------------
+
+// use message_lite
+option optimize_for = LITE_RUNTIME;
+
+message HandShake
+{
+	required uint32   pid       = 1;
+}
+

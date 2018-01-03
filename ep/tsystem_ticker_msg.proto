@@ -1,0 +1,102 @@
+//-----------------------------------
+// ticker related messages
+//-----------------------------------
+
+import "TLib/core/tsystem_time.proto";
+import "TLib/ep/tsystem_ecp_msg.proto";
+
+// use message_lite
+option optimize_for = LITE_RUNTIME;
+
+// header for ticker
+message TickHeader
+{
+    required Time   timestamp    = 1; 
+	optional bool   is_valid     = 2 [default = true];  // indicate if a tick is valid
+	optional int32  contract_id  = 3;
+	optional string tick_tag     = 4;
+}
+
+// book data
+message BookData
+{
+	// represents a bid-ask level
+	// all optional as they may be all 0
+	message BidAskLevel 
+	{
+		optional double bid_prc = 1 [default = 0];
+		optional double ask_prc = 2 [default = 0];
+		optional uint32 bid_sze = 3 [default = 0];
+		optional uint32 ask_sze = 4 [default = 0];
+	}
+
+	required TickHeader tick_info  = 1;
+	
+	repeated BidAskLevel  data     = 2;
+}
+
+// print data, 
+message PrintData
+{
+	// data type
+	enum DataType
+	{
+		LAST_PRINT   = 0;
+		FILTER_MID   = 1;
+	}
+
+	required TickHeader tick_info  = 1;
+
+	required double     data       = 2;
+
+	optional DataType   data_type  = 3 [default = LAST_PRINT];
+}
+	
+// information from and derived from yesterday's data
+message PreTradeData
+{
+    required TickHeader tick_info  = 1;
+
+	required double pre_close_prc  = 2;
+	optional double pre_settlment_prc = 3 [default = 0];
+	optional double pre_open_interest = 4 [default = 0];
+	optional double today_upper_limit_prc = 5 [default = 0];
+	optional double today_lower_limit_prc = 6 [default = 0];
+}
+
+// summary for a day
+message DaySummaryData
+{
+    required TickHeader tick_info  = 1;
+
+	optional double open_prc  = 2 [default = 0];
+	optional double high_prc  = 3 [default = 0];
+	optional double low_prc   = 4 [default = 0];
+	optional double close_prc = 5 [default = 0];
+	optional uint32 volume    = 6 [default = 0];
+	optional double avg_prc   = 7 [default = 0];
+	optional double turnover  = 8 [default = 0];
+	optional double open_interest = 9 [default = 0];
+	optional double settlment_prc = 10 [default = 0];
+}
+
+// quote reqeust
+message QuoteRequestData
+{
+	// quote status
+	enum QuoteStatus
+	{
+		NO_REPLY        =  0; // server has not received
+		PENDING         =  1; // server has received
+		CANCEL          =  2; // cancelled
+		FILLED          =  3; // filled
+		EXPIRE          =  4; // expired
+	}
+
+	required TickHeader tick_info  = 1;
+
+	required string		 qr_id      = 2;
+	optional QuoteStatus status     = 3 [default = NO_REPLY];
+	optional BuySell     buy_sell   = 4 [default = BUY];
+	optional uint32      quantity   = 5 [default = 0];
+}
