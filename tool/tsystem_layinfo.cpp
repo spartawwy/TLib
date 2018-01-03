@@ -752,7 +752,7 @@ layinfo::AppResourceManager LayInfo::LoadAppResourceManager() const
 						, "LayInfo::LoadAppResourceManager"
 						, "can't find table Resource or ResourceRaid ");
 
-		std::string sql = "SELECT name, type, dev_tag, node, domain, host, port, Resource.pid, raid_id "
+		std::string sql = "SELECT name, type, dev_tag, node, host, port, Resource.pid, raid_id "
 			"FROM Resource LEFT JOIN ResourceRaid ON Resource.pid = ResourceRaid.pid";
 	
 		db_conn_->ExecuteSQL(sql.c_str(), [&res](int cols, char** vals, char** names)->int
@@ -762,12 +762,12 @@ layinfo::AppResourceManager LayInfo::LoadAppResourceManager() const
 			a.type    = *(vals+1);
 			a.dev_tag = *(vals+2);
 			a.node	  = *(vals+3);
-			a.domain  = *(vals+4);
-			a.host    = *(vals+5);
-			a.port    = static_cast<unsigned short>(atoi(*(vals+6)));
-			a.pid     = static_cast<unsigned short>(atoi(*(vals+7)));
-			if( *(vals+8) )
-				a.raid_id = static_cast<unsigned short>(atoi(*(vals+8)));
+			//a.domain  = *(vals+4);
+			a.host    = *(vals+4);
+			a.port    = static_cast<unsigned short>(atoi(*(vals+5)));
+			a.pid     = static_cast<unsigned short>(atoi(*(vals+6)));
+			if( *(vals+7) )
+				a.raid_id = static_cast<unsigned short>(atoi(*(vals+7)));
 			res.RegisterResource(a);
 			return 0;
 		});
