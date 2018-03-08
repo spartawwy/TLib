@@ -111,7 +111,8 @@ std::vector<AppResource> AppResourceManager::Find(const std::string& name, const
 	std::vector<AppResource> res;
 	std::for_each( std::begin(resources_), std::end(resources_), [&res, &name, &dev_tag, &host](const std::unique_ptr<AppResource>& entry)
 	{
-		if( entry->name == name && entry->dev_tag == dev_tag && entry->host == host )
+        if( !stricmp(entry->name.c_str(), name.c_str()) && !stricmp(entry->dev_tag.c_str(), dev_tag.c_str()) 
+            && !stricmp(entry->host.c_str(), host.c_str()) )
 			res.push_back(*entry);
 	});
 	return res;

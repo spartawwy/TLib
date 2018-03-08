@@ -43,8 +43,10 @@ namespace TSystem
 		// worker thread related
 		//-------------------    
 
-		// add worker into thread pool, return thread id
+		// add worker into thread pool, todo:return thread id
 		void AddWorker();
+		// add normal worker 
+		void AddNormalWorker();
 
 		// add this thread as worker, will block this thread
 		void AddThisThread();
