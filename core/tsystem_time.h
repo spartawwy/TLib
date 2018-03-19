@@ -113,7 +113,7 @@ namespace TSystem
 		// start count
 		void Start();
 
-		// number of ms seconds
+		// number of microseconds 
 		double Count() const;
 
 	private:
@@ -130,7 +130,7 @@ namespace TSystem
 	// today 
 	int  Today();
 
-	// wait for condition
+	// wait for condition; time_out is microseconds
 	template <typename ConditionPred>
 	bool WaitFor(ConditionPred pred, size_t time_out)
 	{
