@@ -117,7 +117,7 @@ namespace TSystem
 		double Count() const;
 
 	private:
-		std::chrono::system_clock::time_point	start_;
+		std::chrono::steady_clock::time_point	start_;
 	};
 
 	// longdate to component
