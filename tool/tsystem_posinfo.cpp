@@ -173,6 +173,7 @@ ExchangePositionManager& PosInfo::LoadExchangePositionHelper(ExchangePositionMan
 			else if( open_close == "I" )
 				return OpenClose::CLOSE_INTRDAY;
 			assert(0);
+            return OpenClose::OPEN;
 		};
 
 		// lambda to convert char to BuySell
@@ -183,6 +184,7 @@ ExchangePositionManager& PosInfo::LoadExchangePositionHelper(ExchangePositionMan
 			else if( buy_sell == "S" )
 				return BuySell::SELL;
 			assert(0);
+            return BuySell::BUY;
 		};
 
 		// cat conid

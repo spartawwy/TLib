@@ -173,6 +173,7 @@ ContractList::ResourceType TSystem::contract::StringToResourceType( const std::s
 	ThrowTException( CoreErrorCategory::ErrorCode::BAD_ARGUMENT
 		, "TSystem::contract::StringToResourceType"
 		, "unknown ResourceType string: " + type_str);
+    return TSystem::contract::ContractList::ResourceType::PRICER;
 }
 
 const std::string& TSystem::contract::ResourceTypeToString( ContractList::ResourceType type )
@@ -191,4 +192,5 @@ const std::string& TSystem::contract::ResourceTypeToString( ContractList::Resour
 	ThrowTException( CoreErrorCategory::ErrorCode::BAD_ARGUMENT
 		, "TSystem::contract::ResourceTypeToString"
 		, utility::FormatStr("unknown ResourceType: %d", static_cast<short>(type)));
+    return pricer;
 }
