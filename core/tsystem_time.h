@@ -70,7 +70,7 @@ namespace TSystem
 		
 		inline int	   hour()  const { return tm_.tm_hour;        }
 		
-		inline int     min()   const { return tm_.tm_min;         }
+		inline int     minute()   const { return tm_.tm_min;      }
 		
 		inline int     sec()   const { return tm_.tm_sec;         }
 		
